@@ -11,9 +11,16 @@ enum TemplateRenderer {
     }
 
     static func renderAsync(buildData: BuildData, templateDirectory: URL) async throws -> String {
-        let app = try await Application.make(.development)
-        defer { app.shutdown() }
+        try await VaporApplicationLifecycle.withApplication { app in
+            try await renderOnApplication(app, buildData: buildData, templateDirectory: templateDirectory)
+        }
+    }
 
+    static func renderOnApplication(
+        _ app: Application,
+        buildData: BuildData,
+        templateDirectory: URL
+    ) async throws -> String {
         try configureLeaf(on: app, templateDirectory: templateDirectory)
 
         let context = PageContextBuilder.make(from: buildData)

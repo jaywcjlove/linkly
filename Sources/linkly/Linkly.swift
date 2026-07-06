@@ -1,7 +1,7 @@
 import ArgumentParser
 
 @main
-struct Linkly: ParsableCommand {
+struct Linkly: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "linkly",
         abstract: "Generate beautiful link aggregation pages from linkly.json",
