@@ -26,7 +26,7 @@ enum BundledIcons {
         }
 
         let urls = Bundle.module.urls(forResourcesWithExtension: "svg", subdirectory: nil) ?? []
-        let names = Array(Set(urls.map { $0.deletingPathExtension().lastPathComponent.lowercased() })).sorted()
+        let names = Array(Set(urls.map { ($0.lastPathComponent as NSString).deletingPathExtension.lowercased() })).sorted()
         cachedIconNames = names
         return names
     }

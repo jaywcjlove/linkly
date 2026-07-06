@@ -24,7 +24,7 @@ struct MemoryLeafSource: LeafSource {
 
         for item in items where item.pathExtension.lowercased() == "leaf" {
             let content = try String(contentsOf: item, encoding: .utf8)
-            let key = Self.normalizedPath(for: item.deletingPathExtension().lastPathComponent)
+            let key = Self.normalizedPath(for: (item.lastPathComponent as NSString).deletingPathExtension)
             files[key] = content
         }
 
