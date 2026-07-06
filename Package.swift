@@ -8,8 +8,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0"),
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.99.0"),
-        .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.122.0"),
+        .package(url: "https://github.com/vapor/leaf.git", from: "4.5.2"),
     ],
     targets: [
         .executableTarget(
