@@ -1,0 +1,79 @@
+{
+  "links" : [
+    {
+      "label" : "小弟调调™",
+      "url" : "https://wangchujiang.com"
+    },
+    {
+      "label" : "Email",
+      "url" : "mailto:kennyiseeyou@gmail.com"
+    },
+    {
+      "label" : "GitHub",
+      "url" : "https://github.com/jaywcjlove"
+    },
+    {
+      "label" : "Reddit",
+      "url" : "https://www.reddit.com/user/wcjiang/submitted/"
+    },
+    {
+      "label" : "𝕏 (Twitter)",
+      "url" : "https://x.com/jaywcjlove"
+    },
+    {
+      "label" : "Threads",
+      "url" : "https://www.threads.com/@wangchujiang"
+    },
+    {
+      "label" : "Bluesky",
+      "url" : "https://bsky.app/profile/wangchujiang.com"
+    },
+    {
+      "label" : "Mastodon",
+      "url" : "https://mastodon.social/@jaywcjlove"
+    },
+    {
+      "label" : "Substack",
+      "url" : "https://jaywcjlove.substack.com/"
+    },
+    {
+      "label" : "Peerlist",
+      "url" : "https://peerlist.io/jiang"
+    },
+    {
+      "label" : "Instagram",
+      "url" : "https://www.instagram.com/wangchujiang/"
+    },
+    {
+      "label" : "YouTube",
+      "url" : "https://www.youtube.com/@jaywcjlove"
+    },
+    {
+      "label" : "微博",
+      "url" : "https://weibo.com/pc175"
+    },
+    {
+      "label" : "Docker Hub",
+      "url" : "https://hub.docker.com/u/wcjiang"
+    },
+    {
+      "label" : "Swift Package Index",
+      "url" : "https://swiftpackageindex.com/jaywcjlove"
+    },
+    {
+      "label" : "NPM",
+      "url" : "https://www.npmjs.com/~wcjiang"
+    },
+    {
+      "label" : "Product Hunt",
+      "url" : "https://www.producthunt.com/@jaywcjlove/submitted"
+    }
+  ],
+  "site" : {
+    "avatar" : "./jaywcjlove.jpg",
+    "bio" : "Hi, I am a software developer. I love open source and sharing knowledge.",
+    "primary_color" : "#00ff88",
+    "theme" : "dark",
+    "title" : "小弟调调™"
+  }
+}

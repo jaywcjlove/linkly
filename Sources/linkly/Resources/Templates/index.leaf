@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="#(theme)">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="#(bio)">
+  <title>#(title)</title>
+  <style>
+    :root {
+      --primary: #(primaryColor);
+      --primary-hover: color-mix(in srgb, var(--primary) 85%, white);
+      --bg: ##f5f7fa;
+      --surface: ##ffffff;
+      --text: ##1a1a2e;
+      --text-muted: ##6b7280;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --avatar-ring: color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+
+    [data-theme="dark"] {
+      --bg: ##0f0f14;
+      --surface: ##1a1a24;
+      --text: ##f0f0f5;
+      --text-muted: ##9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --avatar-ring: color-mix(in srgb, var(--primary) 40%, transparent);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 3rem;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--avatar-ring);
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+
+    .avatar-placeholder {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--surface);
+      border: 3px solid var(--avatar-ring);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 360px;
+    }
+
+    .links {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.875rem 1.125rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 6px 28px color-mix(in srgb, var(--primary) 20%, transparent);
+    }
+
+    .link-card:active {
+      transform: translateY(0);
+    }
+
+    .link-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    svg.link-icon {
+      fill: currentColor;
+    }
+
+    svg.avatar {
+      border-radius: 50%;
+      fill: currentColor;
+    }
+
+    .link-icon-placeholder {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 15%, transparent);
+      border-radius: 6px;
+    }
+
+    .link-label {
+      flex: 1;
+      text-align: center;
+      margin-right: 24px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1.5rem 1rem 2.5rem;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .link-card {
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题" title="切换主题">🌓</button>
+  <div class="container">
+    <div class="profile">
+      #unsafeHTML(avatarHTML)
+      <h1>#(title)</h1>
+      <p class="bio">#(bio)</p>
+    </div>
+    <div class="links">
+      #for(link in links):
+      <a class="link-card" href="#(link.url)" target="_blank" rel="noopener noreferrer">
+        #unsafeHTML(link.iconHTML)
+        <span class="link-label">#(link.label)</span>
+      </a>
+      #endfor
+    </div>
+  </div>
+  <footer>Made with <a href="https://github.com/jaywcjlove/Linkly" target="_blank" rel="noopener">Linkly</a></footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      localStorage.setItem('linkly-theme', html.getAttribute('data-theme'));
+    }
+
+    (function() {
+      const saved = localStorage.getItem('linkly-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+</body>
+</html>
