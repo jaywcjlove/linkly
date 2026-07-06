@@ -2,11 +2,13 @@ import Foundation
 
 enum GitHubPagesDeployer {
     static let defaultBranch = "gh-pages"
+    static let defaultRemote = "origin"
 
     static func deploy(
         projectDir: URL,
         outputDir: URL,
         branch: String,
+        remote: String,
         message: String
     ) throws {
         let gitDir = projectDir.appendingPathComponent(".git")
@@ -19,45 +21,50 @@ enum GitHubPagesDeployer {
             throw LinklyError.htmlNotFound(htmlPath.path)
         }
 
-        let currentBranch = try GitRunner.currentBranch(in: projectDir)
+        let worktreeDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("linkly-deploy-\(UUID().uuidString)", isDirectory: true)
+
+        var worktreeAdded = false
         defer {
-            if currentBranch != branch {
-                _ = try? GitRunner.run("checkout", currentBranch, in: projectDir)
+            if worktreeAdded {
+                _ = try? GitRunner.run("worktree", "remove", "--force", worktreeDir.path, in: projectDir)
             }
+            try? FileManager.default.removeItem(at: worktreeDir)
         }
 
         if GitRunner.branchExists(branch, in: projectDir) {
-            try GitRunner.run("checkout", branch, in: projectDir)
+            try GitRunner.run("worktree", "add", worktreeDir.path, branch, in: projectDir)
         } else {
-            try GitRunner.run("checkout", "--orphan", branch, in: projectDir)
+            try GitRunner.run("worktree", "add", "-b", branch, worktreeDir.path, in: projectDir)
         }
+        worktreeAdded = true
 
-        try GitRunner.run("rm", "-rf", "--ignore-unmatch", ".", in: projectDir)
-        try clearWorkingTree(in: projectDir)
-        try copyOutputContents(from: outputDir, to: projectDir)
+        try GitRunner.run("rm", "-rf", "--ignore-unmatch", ".", in: worktreeDir)
+        try clearWorkingTree(in: worktreeDir)
+        try copyOutputContents(from: outputDir, to: worktreeDir)
 
-        let noJekyll = projectDir.appendingPathComponent(".nojekyll")
+        let noJekyll = worktreeDir.appendingPathComponent(".nojekyll")
         try Data().write(to: noJekyll)
 
-        try GitRunner.run("add", "-A", in: projectDir)
+        try GitRunner.run("add", "-A", in: worktreeDir)
 
-        let status = try GitRunner.output("status", "--porcelain", in: projectDir)
+        let status = try GitRunner.output("status", "--porcelain", in: worktreeDir)
         if status.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             print("ℹ️  No changes to deploy")
             return
         }
 
-        try GitRunner.run("commit", "-m", message, in: projectDir)
+        try GitRunner.run("commit", "-m", message, in: worktreeDir)
 
         print("✅ Committed to local branch \(branch)")
         print("   Source: \(outputDir.path)")
-        print("   Push manually: git push origin \(branch)")
+        print("   Push manually: git push \(remote) \(branch)")
     }
 
-    private static func clearWorkingTree(in projectDir: URL) throws {
+    private static func clearWorkingTree(in directory: URL) throws {
         let fileManager = FileManager.default
         let contents = try fileManager.contentsOfDirectory(
-            at: projectDir,
+            at: directory,
             includingPropertiesForKeys: nil,
             options: []
         )
@@ -67,7 +74,7 @@ enum GitHubPagesDeployer {
         }
     }
 
-    private static func copyOutputContents(from outputDir: URL, to projectDir: URL) throws {
+    private static func copyOutputContents(from outputDir: URL, to destinationDir: URL) throws {
         let fileManager = FileManager.default
         let contents = try fileManager.contentsOfDirectory(
             at: outputDir,
@@ -76,7 +83,7 @@ enum GitHubPagesDeployer {
         )
 
         for item in contents {
-            let destination = projectDir.appendingPathComponent(item.lastPathComponent)
+            let destination = destinationDir.appendingPathComponent(item.lastPathComponent)
             try fileManager.copyItem(at: item, to: destination)
         }
     }
@@ -115,11 +122,6 @@ enum GitRunner {
 
     static func output(_ arguments: String..., in directory: URL) throws -> String {
         try run(arguments: arguments, in: directory)
-    }
-
-    static func currentBranch(in directory: URL) throws -> String {
-        try output("rev-parse", "--abbrev-ref", "HEAD", in: directory)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     static func branchExists(_ branch: String, in directory: URL) -> Bool {

@@ -16,6 +16,9 @@ struct Deploy: ParsableCommand {
     @Option(name: .long, help: "Git branch to deploy (default: gh-pages)")
     var branch: String = GitHubPagesDeployer.defaultBranch
 
+    @Option(name: .long, help: "Git remote name (default: origin)")
+    var remote: String = GitHubPagesDeployer.defaultRemote
+
     @Option(name: .shortAndLong, help: "Git commit message")
     var message: String = "Deploy site"
 
@@ -35,6 +38,7 @@ struct Deploy: ParsableCommand {
             projectDir: projectDir,
             outputDir: outputDir,
             branch: branch,
+            remote: remote,
             message: message
         )
     }
