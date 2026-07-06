@@ -47,6 +47,9 @@ enum LinklyError: LocalizedError {
     case templateBundleNotFound
     case templateAlreadyExists(String)
     case templateRenderFailed
+    case notAGitRepository(String)
+    case gitRemoteNotFound(String)
+    case gitCommandFailed(String, String)
 
     var errorDescription: String? {
         switch self {
@@ -66,6 +69,15 @@ enum LinklyError: LocalizedError {
             return "Template already exists: \(path). Use --force to overwrite."
         case .templateRenderFailed:
             return "Failed to render Leaf template."
+        case .notAGitRepository(let path):
+            return "Not a git repository: \(path)"
+        case .gitRemoteNotFound(let remote):
+            return "Git remote not found: \(remote)"
+        case .gitCommandFailed(let command, let output):
+            if output.isEmpty {
+                return "Git command failed: \(command)"
+            }
+            return "Git command failed: \(command)\n\(output)"
         }
     }
 }

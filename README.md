@@ -13,8 +13,10 @@ A Swift command-line tool that generates beautiful, responsive link aggregation 
 - **Responsive HTML** — mobile-friendly, dark/light theme with in-page toggle
 - **Smart icons** — built-in SVG logos auto-matched by URL domain; no `icon` field required
 - **Optimized assets** — SVG icons inlined into HTML; PNG/JPG copied to `assets/`
-- **Local preview** — built-in dev server and one-command browser preview
+- **Leaf templates** — pages rendered with [Leaf](https://github.com/vapor/leaf); eject and customize `index.leaf`
+- **Local preview** — [Vapor](https://github.com/vapor/vapor)-powered dev server and one-command browser preview
 - **Deploy-ready output** — static files in `.html/` (or a custom directory)
+- **GitHub Pages** — one-command deploy to the `gh-pages` branch
 
 ## Installation
 
@@ -41,6 +43,7 @@ mkdir my-links && cd my-links
 linkly init          # create linkly.json and build .html/
 linkly preview       # rebuild and open in browser
 linkly serve         # rebuild and serve at http://localhost:8080
+linkly deploy        # commit .html/ to local gh-pages
 ```
 
 ## Project Layout
@@ -48,6 +51,8 @@ linkly serve         # rebuild and serve at http://localhost:8080
 ```
 my-links/
 ├── linkly.json          # source config (edit this)
+├── templates/           # optional custom Leaf templates
+│   └── index.leaf
 ├── avatar.jpg           # optional profile image
 ├── logo.png             # optional custom raster icon
 └── .html/               # build output (deploy this)
@@ -69,6 +74,9 @@ Create or edit `linkly.json` in your project directory:
     "avatar": "./avatar.jpg",
     "theme": "dark",
     "primary_color": "#00ff88"
+  },
+  "template": {
+    "directory": "./templates"
   },
   "links": [
     {
@@ -104,16 +112,26 @@ Create or edit `linkly.json` in your project directory:
 
 The `icon` field is optional. When omitted, Linkly looks up a matching SVG in its bundled icon library based on the link URL's domain (e.g. `github.com` → `github.svg`).
 
+### `template` fields
+
+| Field | Description |
+|-------|-------------|
+| `directory` | Leaf template directory (default: `./templates`) |
+
+See [Custom Templates](#custom-templates) for details.
+
 ## Commands
 
 | Command | Description |
 |---------|-------------|
 | `linkly init` | Create default `linkly.json` and build output |
 | `linkly build` | Read config and generate output directory |
+| `linkly deploy` | Commit output to the local `gh-pages` branch |
 | `linkly serve` | Build and start local preview server (default port `8080`) |
 | `linkly preview` | Build and open `index.html` in the default browser |
 | `linkly version` | Print version number |
 | `linkly add <label> <url> [<icon>]` | Append a link to `linkly.json` |
+| `linkly template eject` | Copy bundled Leaf templates to your project |
 
 ### Common options
 
@@ -137,7 +155,61 @@ linkly add Blog https://example.com ./logo.png --build
 
 # Serve on a custom port without rebuilding
 linkly serve -p 3000 --no-build
+
+# Deploy to GitHub Pages
+linkly deploy
+linkly deploy --build
+linkly deploy -m "Update links"
 ```
+
+## Deploy
+
+Prepare your site for [GitHub Pages](https://pages.github.com/) by committing the build output to the local `gh-pages` branch:
+
+```bash
+linkly deploy
+```
+
+This command will:
+
+1. Run `linkly build` when `--build` is specified
+2. Check out the local `gh-pages` branch (create it if missing)
+3. Replace branch contents with `.html/` output and add a `.nojekyll` file
+4. Commit locally (does not push to remote)
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `-o, --output` | `.html` | Output directory to deploy |
+| `--branch` | `gh-pages` | Target git branch |
+| `-m, --message` | `Deploy site` | Commit message |
+| `--build` | — | Build HTML before deploy |
+
+### Prerequisites
+
+- The project directory must be a git repository
+
+### Examples
+
+```bash
+# Deploy existing build output
+linkly deploy
+
+# Build and deploy
+linkly deploy --build
+
+# Custom commit message
+linkly deploy --build -m "Update profile links"
+
+# Custom branch
+linkly deploy --branch gh-pages
+
+# Push to remote manually
+git push origin gh-pages
+```
+
+After pushing, enable GitHub Pages in your repository settings and set the source to the `gh-pages` branch.
 
 ## Icons
 
@@ -164,6 +236,129 @@ Shipped logos include: `github`, `x`, `twitter`, `instagram`, `linkedin`, `youtu
 
 To add a new icon, drop an SVG into `Sources/linkly/Resources/Icons/` named after the domain or brand (e.g. `mysite.com.svg` or `mysite.svg`), then rebuild Linkly.
 
+## Custom Templates
+
+Linkly renders pages with [Leaf](https://github.com/vapor/leaf). Both `linkly build` and `linkly serve` use the same template engine — `build` writes static HTML, `serve` renders dynamically via [Vapor](https://github.com/vapor/vapor) for local preview.
+
+### Eject templates
+
+Export the default template into your project:
+
+```bash
+linkly template eject
+```
+
+This creates `./templates/index.leaf` (or the path set in `linkly.json`). Edit the file, then rebuild:
+
+```bash
+linkly build
+# or
+linkly serve
+```
+
+Overwrite an existing template:
+
+```bash
+linkly template eject --force
+```
+
+Use a custom template directory:
+
+```bash
+linkly template eject --template-directory ./my-theme
+```
+
+### Template resolution
+
+Linkly picks a template directory in this order:
+
+1. **Custom** — if `./templates/index.leaf` exists (path from `template.directory` in config)
+2. **Bundled** — built-in default template shipped with Linkly
+
+### Configuration
+
+```json
+{
+  "template": {
+    "directory": "./templates"
+  }
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `directory` | Path to your Leaf templates (default: `./templates`) |
+
+### Template variables
+
+`index.leaf` receives these variables from `linkly.json`:
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `title` | `String` | Site title |
+| `bio` | `String` | Bio text |
+| `theme` | `String` | Default theme: `dark` or `light` |
+| `primaryColor` | `String` | Accent color (e.g. `#00ff88`) |
+| `avatarHTML` | `String` | Pre-rendered avatar HTML (use `#unsafeHTML`) |
+| `links` | `[Link]` | Link list |
+
+Each item in `links`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `label` | `String` | Link label |
+| `url` | `String` | Link URL |
+| `iconHTML` | `String` | Pre-rendered icon HTML (SVG inline, `<img>`, or placeholder) |
+
+### Leaf syntax examples
+
+```leaf
+<html lang="zh-CN" data-theme="#(theme)">
+  <title>#(title)</title>
+
+  <style>
+    :root {
+      --primary: #(primaryColor);
+    }
+    /* Escape # in CSS hex colors with backslash */
+    html[data-theme="dark"] {
+      --bg: \#0f0f14;
+    }
+  </style>
+
+  <body>
+    #unsafeHTML(avatarHTML)
+    <h1>#(title)</h1>
+    <p>#(bio)</p>
+
+    #for(link in links):
+    <a href="#(link.url)">
+      #unsafeHTML(link.iconHTML)
+      <span>#(link.label)</span>
+    </a>
+    #endfor
+  </body>
+</html>
+```
+
+Notes:
+
+- Use `#(variable)` for escaped text output
+- Use `#unsafeHTML(avatarHTML)` / `#unsafeHTML(link.iconHTML)` for pre-rendered HTML (avatars, inline SVG icons)
+- In CSS, escape hex colors as `\#f5f7fa` — a bare `#` is parsed as Leaf syntax
+- Use `#for(link in links):` … `#endfor` to iterate links
+
+### Workflow
+
+```bash
+linkly init
+linkly template eject      # optional: customize layout
+# edit templates/index.leaf
+linkly build               # generate .html/index.html
+linkly serve               # live preview with Vapor
+linkly deploy              # publish to GitHub Pages
+```
+
 ## Development
 
 ### Build
@@ -179,6 +374,7 @@ swift build -c release
 swift run linkly --help
 swift run linkly init
 swift run linkly build
+swift run linkly deploy
 swift run linkly serve
 swift run linkly preview
 swift run linkly version

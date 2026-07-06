@@ -9,6 +9,7 @@ struct Linkly: AsyncParsableCommand {
         subcommands: [
             Init.self,
             Build.self,
+            Deploy.self,
             Serve.self,
             Preview.self,
             Version.self,
