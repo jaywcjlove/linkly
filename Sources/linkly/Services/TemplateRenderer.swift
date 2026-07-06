@@ -4,24 +4,24 @@ import LeafKit
 import Vapor
 
 enum TemplateRenderer {
-    static func render(buildData: BuildData, templateDirectory: URL) throws -> String {
+    static func render(buildData: BuildData, templateSource: TemplateSource) throws -> String {
         try runAsync {
-            try await renderAsync(buildData: buildData, templateDirectory: templateDirectory)
+            try await renderAsync(buildData: buildData, templateSource: templateSource)
         }
     }
 
-    static func renderAsync(buildData: BuildData, templateDirectory: URL) async throws -> String {
+    static func renderAsync(buildData: BuildData, templateSource: TemplateSource) async throws -> String {
         try await VaporApplicationLifecycle.withApplication { app in
-            try await renderOnApplication(app, buildData: buildData, templateDirectory: templateDirectory)
+            try await renderOnApplication(app, buildData: buildData, templateSource: templateSource)
         }
     }
 
     static func renderOnApplication(
         _ app: Application,
         buildData: BuildData,
-        templateDirectory: URL
+        templateSource: TemplateSource
     ) async throws -> String {
-        try configureLeaf(on: app, templateDirectory: templateDirectory)
+        try configureLeaf(on: app, templateSource: templateSource)
 
         let context = PageContextBuilder.make(from: buildData)
         let request = Request(application: app, on: app.eventLoopGroup.next())
@@ -35,14 +35,14 @@ enum TemplateRenderer {
         return String(decoding: body, as: UTF8.self)
     }
 
-    static func configureLeaf(on app: Application, templateDirectory: URL) throws {
+    static func configureLeaf(on app: Application, templateSource: TemplateSource) throws {
         app.views.use(.leaf)
-        app.leaf.configuration.rootDirectory = templateDirectory.path
 
-        if shouldUseMemorySource(for: templateDirectory) {
-            let source = try MemoryLeafSource.loadTemplates(from: templateDirectory)
-            app.leaf.sources = .singleSource(source)
-        } else {
+        switch templateSource {
+        case .embedded:
+            app.leaf.sources = .singleSource(MemoryLeafSource.embedded())
+        case let .directory(templateDirectory):
+            app.leaf.configuration.rootDirectory = templateDirectory.path
             app.leaf.sources = .singleSource(NIOLeafFiles(
                 fileio: app.fileio,
                 limits: [.toSandbox, .requireExtensions],
@@ -50,10 +50,6 @@ enum TemplateRenderer {
                 viewDirectory: templateDirectory.path
             ))
         }
-    }
-
-    private static func shouldUseMemorySource(for directory: URL) -> Bool {
-        directory.path.contains("/.build/")
     }
 
     private static func runAsync<T>(_ operation: @escaping () async throws -> T) throws -> T {

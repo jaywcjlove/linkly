@@ -17,6 +17,11 @@ jobs:
         with:
           swift-version: "6.2"
 
+      - name: Verify embedded resources
+        run: |
+          swift Scripts/generate-embedded-resources.swift
+          git diff --exit-code -- Sources/linkly/Generated/EmbeddedResources.swift
+
       - name: Extract version from tag
         id: extract_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT

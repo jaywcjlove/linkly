@@ -36,6 +36,14 @@ struct MemoryLeafSource: LeafSource {
         return MemoryLeafSource(files: files)
     }
 
+    static func embedded() -> MemoryLeafSource {
+        let files = Dictionary(uniqueKeysWithValues: EmbeddedResources.templates.map { fileName, content in
+            let name = (fileName as NSString).deletingPathExtension
+            return (normalizedPath(for: name), content)
+        })
+        return MemoryLeafSource(files: files)
+    }
+
     private static func normalizedPath(for template: String) -> String {
         var path = template
         if !path.hasSuffix(".leaf") {

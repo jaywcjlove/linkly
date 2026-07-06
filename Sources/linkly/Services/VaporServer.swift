@@ -9,12 +9,12 @@ enum VaporServer {
         port: UInt16
     ) async throws {
         try await VaporApplicationLifecycle.withApplication { app in
-            let templateDirectory = try TemplateManager.resolveTemplateDirectory(
+            let templateSource = TemplateManager.resolveTemplateSource(
                 projectDir: projectDir,
                 config: config
             )
 
-            try TemplateRenderer.configureLeaf(on: app, templateDirectory: templateDirectory)
+            try TemplateRenderer.configureLeaf(on: app, templateSource: templateSource)
 
             if FileManager.default.fileExists(atPath: outputDir.path) {
                 app.middleware.use(FileMiddleware(publicDirectory: outputDir.path))
@@ -30,7 +30,7 @@ enum VaporServer {
                 let html = try await TemplateRenderer.renderOnApplication(
                     app,
                     buildData: buildData,
-                    templateDirectory: templateDirectory
+                    templateSource: templateSource
                 )
 
                 return Response(
@@ -45,7 +45,7 @@ enum VaporServer {
 
             print("🚀 Linkly server running at http://localhost:\(port)")
             print("   Project:  \(projectDir.path)")
-            print("   Template: \(templateDirectory.path)")
+            print("   Template: \(templateSource.displayPath)")
             print("   Assets:   \(outputDir.path)")
             print("   Press Ctrl+C to stop")
 

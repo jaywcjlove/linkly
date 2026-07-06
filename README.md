@@ -240,7 +240,12 @@ When `icon` is not set, Linkly extracts the domain from the URL and searches bun
 
 Shipped logos include: `github`, `x`, `twitter`, `instagram`, `linkedin`, `youtube`, `telegram`, `discord`, `facebook`, `reddit`, `medium`, `tiktok`, `twitch`, `bilibili`, `wechat`, `weibo`, `threads`, `bsky`, `mastodon`, `substack`, `docker`, `npmjs`, `email`, `website`, and more.
 
-To add a new icon, drop an SVG into `Sources/linkly/Resources/Icons/` named after the domain or brand (e.g. `mysite.com.svg` or `mysite.svg`), then rebuild Linkly.
+To add a new icon, drop an SVG into `Sources/linkly/Resources/Icons/` named after the domain or brand (e.g. `mysite.com.svg` or `mysite.svg`), regenerate the embedded resources, then rebuild Linkly:
+
+```bash
+swift Scripts/generate-embedded-resources.swift
+swift build
+```
 
 ## Custom Templates
 

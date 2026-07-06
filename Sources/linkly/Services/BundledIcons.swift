@@ -1,8 +1,6 @@
 import Foundation
 
 enum BundledIcons {
-    private static var cachedIconNames: [String]?
-
     private static let ignoredTLDs: Set<String> = [
         "app", "be", "cc", "cn", "co", "com", "dev", "gg", "io", "jp",
         "me", "net", "org", "qq", "tv", "uk",
@@ -21,23 +19,11 @@ enum BundledIcons {
     }
 
     static func availableIconNames() -> [String] {
-        if let cachedIconNames {
-            return cachedIconNames
-        }
-
-        let urls = Bundle.module.urls(forResourcesWithExtension: "svg", subdirectory: nil) ?? []
-        let names = Array(Set<String>(urls.compactMap { url -> String? in
-            guard let fileName = (url as NSURL).lastPathComponent else { return nil }
-            return (fileName as NSString).deletingPathExtension.lowercased()
-        })).sorted()
-        cachedIconNames = names
-        return names
+        EmbeddedResources.icons.keys.sorted()
     }
 
-    static func bundledURL(for iconName: String) -> URL? {
-        let name = iconName.lowercased()
-        guard availableIconNames().contains(name) else { return nil }
-        return Bundle.module.url(forResource: name, withExtension: "svg")
+    static func content(for iconName: String) -> String? {
+        EmbeddedResources.icons[iconName.lowercased()]
     }
 
     private static func iconName(fromURL urlString: String) -> String? {

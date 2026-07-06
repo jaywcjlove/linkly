@@ -129,12 +129,11 @@ enum IconProcessor {
         }
 
         guard let iconName = BundledIcons.resolveIconName(for: link),
-              let source = BundledIcons.bundledURL(for: iconName)
+              let content = BundledIcons.content(for: iconName)
         else {
             return .placeholder(initial: initial)
         }
 
-        let content = try String(contentsOf: source, encoding: .utf8)
         let inline = inlineSVG(content, className: "link-icon")
         stats.inlinedIcons.append("\(iconName).svg")
         return .inlineSVG(inline)

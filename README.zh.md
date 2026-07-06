@@ -240,7 +240,12 @@ git push origin gh-pages
 
 已内置：`github`、`x`、`twitter`、`instagram`、`linkedin`、`youtube`、`telegram`、`discord`、`facebook`、`reddit`、`medium`、`tiktok`、`twitch`、`bilibili`、`wechat`、`weibo`、`threads`、`bsky`、`mastodon`、`substack`、`docker`、`npmjs`、`email`、`website` 等。
 
-添加新图标：将 SVG 放入 `Sources/linkly/Resources/Icons/`，文件名与域名或品牌对应（如 `mysite.com.svg` 或 `mysite.svg`），重新编译 Linkly 即可。
+添加新图标：将 SVG 放入 `Sources/linkly/Resources/Icons/`，文件名与域名或品牌对应（如 `mysite.com.svg` 或 `mysite.svg`），重新生成内嵌资源后再编译 Linkly：
+
+```bash
+swift Scripts/generate-embedded-resources.swift
+swift build
+```
 
 ## 自定义模板
 

@@ -35,13 +35,13 @@ enum BuildService {
             outputDir: outputDir
         )
 
-        let templateDirectory = try TemplateManager.resolveTemplateDirectory(
+        let templateSource = TemplateManager.resolveTemplateSource(
             projectDir: projectDir,
             config: config
         )
         let html = try TemplateRenderer.render(
             buildData: buildData,
-            templateDirectory: templateDirectory
+            templateSource: templateSource
         )
         let htmlPath = outputDir.appendingPathComponent(ConfigManager.outputFileName)
         try html.write(to: htmlPath, atomically: true, encoding: .utf8)

@@ -1,5 +1,19 @@
 import Foundation
 
+enum TemplateSource {
+    case embedded
+    case directory(URL)
+
+    var displayPath: String {
+        switch self {
+        case .embedded:
+            return "embedded"
+        case let .directory(url):
+            return url.path
+        }
+    }
+}
+
 enum TemplateManager {
     static let defaultTemplateDirectoryName = "templates"
     static let templateFileName = "index.leaf"
@@ -12,49 +26,18 @@ enum TemplateManager {
         resolvePath(templateDirectoryPath(in: config), relativeTo: projectDir)
     }
 
-    static func resolveTemplateDirectory(projectDir: URL, config: LinklyConfig) throws -> URL {
-        let customDir = customTemplateDirectory(projectDir: projectDir, config: config)
-        let customTemplate = customDir.appendingPathComponent(templateFileName)
+    static func resolveTemplateSource(projectDir: URL, config: LinklyConfig) -> TemplateSource {
+        let customDirectory = customTemplateDirectory(projectDir: projectDir, config: config)
+        let customTemplate = customDirectory.appendingPathComponent(templateFileName)
 
         if FileManager.default.fileExists(atPath: customTemplate.path) {
-            return customDir
+            return .directory(customDirectory)
         }
 
-        guard let bundled = bundledTemplateDirectory() else {
-            throw LinklyError.templateNotFound(customTemplate.path)
-        }
-
-        return bundled
-    }
-
-    static func bundledTemplateDirectory() -> URL? {
-        if let url = Bundle.module.url(forResource: "index", withExtension: "leaf") {
-            return url.deletingLastPathComponent()
-        }
-
-        if let resourceURL = Bundle.module.resourceURL {
-            let candidates = [
-                resourceURL.appendingPathComponent("Templates", isDirectory: true),
-                resourceURL.appendingPathComponent("Resources/Templates", isDirectory: true),
-                resourceURL,
-            ]
-
-            for candidate in candidates {
-                let template = candidate.appendingPathComponent(templateFileName)
-                if FileManager.default.fileExists(atPath: template.path) {
-                    return candidate
-                }
-            }
-        }
-
-        return nil
+        return .embedded
     }
 
     static func eject(projectDir: URL, config: LinklyConfig, force: Bool) throws -> URL {
-        guard let bundled = bundledTemplateDirectory() else {
-            throw LinklyError.templateBundleNotFound
-        }
-
         let destination = customTemplateDirectory(projectDir: projectDir, config: config)
         let destinationTemplate = destination.appendingPathComponent(templateFileName)
 
@@ -67,22 +50,12 @@ enum TemplateManager {
         }
 
         try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
-        try copyTemplateFiles(from: bundled, to: destination)
+        for (fileName, content) in EmbeddedResources.templates {
+            let target = destination.appendingPathComponent(fileName)
+            try content.write(to: target, atomically: true, encoding: .utf8)
+        }
 
         return destination
-    }
-
-    private static func copyTemplateFiles(from source: URL, to destination: URL) throws {
-        let fileManager = FileManager.default
-        let items = try fileManager.contentsOfDirectory(at: source, includingPropertiesForKeys: nil)
-
-        for item in items {
-            let target = destination.appendingPathComponent(item.lastPathComponent)
-            if fileManager.fileExists(atPath: target.path) {
-                try fileManager.removeItem(at: target)
-            }
-            try fileManager.copyItem(at: item, to: target)
-        }
     }
 
     private static func resolvePath(_ path: String, relativeTo projectDir: URL) -> URL {

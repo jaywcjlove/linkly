@@ -19,10 +19,7 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Leaf", package: "leaf"),
             ],
-            resources: [
-                .process("Resources/Icons"),
-                .copy("Resources/Templates"),
-            ]
+            exclude: ["Resources"]
         ),
     ]
 )
