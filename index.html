@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hi, I am a software developer. I love open source and sharing knowledge.">
+  <title>小弟调调™</title>
+  <style>
+    :root {
+      --primary: #00ff88;
+      --primary-hover: color-mix(in srgb, var(--primary) 85%, white);
+    }
+
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --avatar-ring: color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f0f14;
+      --surface: #1a1a24;
+      --text: #f0f0f5;
+      --text-muted: #9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --avatar-ring: color-mix(in srgb, var(--primary) 40%, transparent);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 3rem;
+      line-height: 1.5;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--avatar-ring);
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+
+    .avatar-placeholder {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--surface);
+      border: 3px solid var(--avatar-ring);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 360px;
+    }
+
+    .links {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.875rem 1.125rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.95rem;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 6px 28px color-mix(in srgb, var(--primary) 20%, transparent);
+    }
+
+    .link-card:active {
+      transform: translateY(0);
+    }
+
+    .link-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    svg.link-icon {
+      fill: currentColor;
+    }
+
+    svg.avatar {
+      border-radius: 50%;
+      fill: currentColor;
+    }
+
+    .link-icon-placeholder {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 15%, transparent);
+      border-radius: 6px;
+    }
+
+    .link-label {
+      flex: 1;
+      text-align: center;
+      margin-right: 24px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: var(--shadow);
+      transition: border-color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1.5rem 1rem 2.5rem;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .link-card {
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="切换主题" title="切换主题">🌓</button>
+  <div class="container">
+    <div class="profile">
+      <img class="avatar" src="./assets/jaywcjlove.jpg" alt="小弟调调™" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+<div class="avatar-placeholder" style="display:none">小</div>
+      <h1>小弟调调™</h1>
+      <p class="bio">Hi, I am a software developer. I love open source and sharing knowledge.</p>
+    </div>
+    <div class="links">
+      
+      <a class="link-card" href="https://wangchujiang.com" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"><path d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20" clip-rule="evenodd"/><path d="M4 24h40"/><path d="M24 44c4.418 0 8-8.954 8-20S28.418 4 24 4s-8 8.954-8 20s3.582 20 8 20" clip-rule="evenodd"/><path d="M9.858 10.142A19.94 19.94 0 0 0 24 16a19.94 19.94 0 0 0 14.142-5.858m0 27.716A19.94 19.94 0 0 0 24 32a19.94 19.94 0 0 0-14.142 5.858"/></g></svg>
+        <span class="link-label">小弟调调™</span>
+      </a>
+      
+      <a class="link-card" href="mailto:kennyiseeyou@gmail.com" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <span class="link-label">Email</span>
+      </a>
+      
+      <a class="link-card" href="https://github.com/jaywcjlove" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span class="link-label">GitHub</span>
+      </a>
+      
+      <a class="link-card" href="https://www.reddit.com/user/wcjiang/submitted/" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286A.72.72 0 0 0 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0m4.388 3.199a1.999 1.999 0 1 1-1.947 2.46v.002a2.37 2.37 0 0 0-2.032 2.341v.007c1.776.067 3.4.567 4.686 1.363a2.802 2.802 0 1 1 2.908 4.753c-.088 3.256-3.637 5.876-7.997 5.876c-4.361 0-7.905-2.617-7.998-5.87a2.8 2.8 0 0 1 1.189-5.34c.645 0 1.239.218 1.712.585c1.275-.79 2.881-1.291 4.64-1.365v-.01a3.23 3.23 0 0 1 2.88-3.207a2 2 0 0 1 1.959-1.595m-8.085 8.376c-.784 0-1.459.78-1.506 1.797s.64 1.429 1.426 1.429s1.371-.369 1.418-1.385s-.553-1.841-1.338-1.841m7.406 0c-.786 0-1.385.824-1.338 1.841s.634 1.385 1.418 1.385c.785 0 1.473-.413 1.426-1.429c-.046-1.017-.721-1.797-1.506-1.797m-3.703 4.013c-.974 0-1.907.048-2.77.135a.222.222 0 0 0-.183.305a3.2 3.2 0 0 0 2.953 1.964a3.2 3.2 0 0 0 2.953-1.964a.222.222 0 0 0-.184-.305a28 28 0 0 0-2.769-.135"/></svg>
+        <span class="link-label">Reddit</span>
+      </a>
+      
+      <a class="link-card" href="https://x.com/jaywcjlove" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span class="link-label">𝕏 (Twitter)</span>
+      </a>
+      
+      <a class="link-card" href="https://www.threads.com/@wangchujiang" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098c1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015c-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164c1.43 1.783 3.631 2.698 6.54 2.717c2.623-.02 4.358-.631 5.8-2.045c1.647-1.613 1.618-3.593 1.09-4.798c-.31-.71-.873-1.3-1.634-1.75c-.192 1.352-.622 2.446-1.284 3.272c-.886 1.102-2.14 1.704-3.73 1.79c-1.202.065-2.361-.218-3.259-.801c-1.063-.689-1.685-1.74-1.752-2.964c-.065-1.19.408-2.285 1.33-3.082c.88-.76 2.119-1.207 3.583-1.291a14 14 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757c-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32l-1.757-1.18c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388q.163.07.321.142c1.49.7 2.58 1.761 3.154 3.07c.797 1.82.871 4.79-1.548 7.158c-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69q-.362 0-.739.021c-1.836.103-2.98.946-2.916 2.143c.067 1.256 1.452 1.839 2.784 1.767c1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221"></path></svg>
+        <span class="link-label">Threads</span>
+      </a>
+      
+      <a class="link-card" href="https://bsky.app/profile/wangchujiang.com" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 226"><path fill="currentColor" d="M55.491 15.172c29.35 22.035 60.917 66.712 72.509 90.686c11.592-23.974 43.159-68.651 72.509-90.686C221.686-.727 256-13.028 256 26.116c0 7.818-4.482 65.674-7.111 75.068c-9.138 32.654-42.436 40.983-72.057 35.942c51.775 8.812 64.946 38 36.501 67.187c-54.021 55.433-77.644-13.908-83.696-31.676c-1.11-3.257-1.63-4.78-1.637-3.485c-.008-1.296-.527.228-1.637 3.485c-6.052 17.768-29.675 87.11-83.696 31.676c-28.445-29.187-15.274-58.375 36.5-67.187c-29.62 5.041-62.918-3.288-72.056-35.942C4.482 91.79 0 33.934 0 26.116C0-13.028 34.314-.727 55.491 15.172"></path></svg>
+        <span class="link-label">Bluesky</span>
+      </a>
+      
+      <a class="link-card" href="https://mastodon.social/@jaywcjlove" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.193 7.879c0-5.206-3.411-6.732-3.411-6.732C18.062.238 15.657.017 13.129 0h-.129c-2.528.017-4.933.238-6.653 1.107 0 0-3.411 1.526-3.411 6.732 0 1.192-.023 2.618.015 4.129.124 5.092.934 10.109 5.641 11.321 2.174.574 4.034.695 5.535.612 2.722-.15 4.25-.972 4.25-.972l-.09-1.975s-1.945.613-4.129.539c-2.165-.074-4.449-.233-4.804-2.89-.049-.388-.078-.794-.078-1.213 0 0 2.666.649 6.015.735 1.889.049 3.666-.062 5.459-.228 3.439-.359 6.418-2.212 6.815-3.906.588-2.572.535-6.279.535-6.279zm-4.059 4.722h-2.497V8.469c0-1.29-.525-1.944-1.573-1.944-1.16 0-1.739.751-1.739 2.228v3.236H9.928V8.785c0-1.477-.58-2.228-1.74-2.228-1.047 0-1.572.655-1.572 1.944v4.132H4.119V8.367c0-1.29.33-2.316.992-3.078.682-.762 1.574-1.146 2.676-1.146 1.28 0 2.25.49 2.892 1.469l.622 1.043.622-1.043c.642-.979 1.612-1.469 2.892-1.469 1.102 0 1.994.384 2.676 1.146.662.762.992 1.788.992 3.078v4.234z"/></svg>
+        <span class="link-label">Mastodon</span>
+      </a>
+      
+      <a class="link-card" href="https://jaywcjlove.substack.com/" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" role="img" width="1em" height="1em" viewBox="0 0 16 18" fill="#ff6719" stroke-width="1.8" stroke="none" xmlns="http://www.w3.org/2000/svg"><g><title></title><path d="M16 4H0V6H16V4Z"></path><path d="M0 8V18L7.9993 13.534L16 18V8H0Z"></path><path d="M16 0H0V2H16V0Z"></path></g></svg>
+        <span class="link-label">Substack</span>
+      </a>
+      
+      <a class="link-card" href="https://peerlist.io/jiang" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C2.667 0 0 2.667 0 12s2.673 12 12 12s12-2.667 12-12S21.327 0 12 0m8.892 20.894c-1.57 1.569-4.247 2.249-8.892 2.249s-7.322-.68-8.892-2.25C1.735 19.522 1.041 17.3.89 13.654A40 40 0 0 1 .857 12c0-1.162.043-2.201.13-3.13c.177-1.859.537-3.278 1.106-4.366c.284-.544.62-1.006 1.013-1.398s.854-.729 1.398-1.013C5.592 1.524 7.01 1.164 8.87.988C9.799.9 10.838.858 12 .858c4.645 0 7.322.68 8.892 2.248s2.25 4.246 2.25 8.894s-.681 7.325-2.25 8.894M20.538 3.46C19.064 1.986 16.51 1.357 12 1.357c-4.513 0-7.067.629-8.54 2.103C1.986 4.933 1.357 7.487 1.357 12c0 4.511.63 7.065 2.105 8.54C4.936 22.014 7.49 22.643 12 22.643s7.064-.629 8.538-2.103s2.105-4.029 2.105-8.54s-.63-7.065-2.105-8.54M14.25 16.49a6.1 6.1 0 0 1-2.442.59v2.706H10.45v.357H6.429V5.57h.357V4.214h5.676c3.565 0 6.467 2.81 6.467 6.262c0 2.852-1.981 5.26-4.68 6.013zm-1.788-8.728H10.45v5.428h2.011c1.532 0 2.802-1.2 2.802-2.714s-1.27-2.714-2.802-2.714zm.901 4.351c.117-.239.186-.502.186-.78c0-1.01-.855-1.857-1.945-1.857h-.296V8.62h1.154c1.09 0 1.945.847 1.945 1.857c0 .705-.422 1.323-1.044 1.637zm4.104 1.493q.064-.096.123-.194a5.7 5.7 0 0 0 .526-1.103a6 6 0 0 0 .11-.362q.032-.113.06-.227a6 6 0 0 0 .073-.41c.01-.068.025-.134.032-.203q.037-.31.038-.63c0-3.198-2.687-5.763-5.967-5.763H7.286v14.572h4.022v-3.048h1.154c1.43 0 2.747-.488 3.778-1.303a6 6 0 0 0 .46-.406l.1-.105q.16-.163.308-.337q.064-.08.126-.162q.123-.156.233-.319m-5.005 1.775H10.45v3.048H8.143V5.57h4.319c2.837 0 5.11 2.211 5.11 4.905s-2.273 4.905-5.11 4.905z"/></svg>
+        <span class="link-label">Peerlist</span>
+      </a>
+      
+      <a class="link-card" href="https://www.instagram.com/wangchujiang/" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        <span class="link-label">Instagram</span>
+      </a>
+      
+      <a class="link-card" href="https://www.youtube.com/@jaywcjlove" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <span class="link-label">YouTube</span>
+      </a>
+      
+      <a class="link-card" href="https://weibo.com/pc175" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1472"><path fill="currentColor" d="M675 1124q21-34 11-69t-45-50q-34-14-73-1t-60 46q-22 34-13 68.5t43 50.5t74.5 2.5T675 1124m94-121q8-13 3.5-26.5T755 958q-14-5-28.5.5T705 977q-17 31 13 45q14 5 29-.5t22-18.5m174 107q-45 102-158 150t-224 12q-107-34-147.5-126.5T420 958q47-93 151.5-139T782 800q111 29 158.5 119.5T943 1110m312-160q-9-96-89-170T957.5 671T683 650q-223 23-369.5 141.5T181 1056q9 96 89 170t208.5 109t274.5 21q223-23 369.5-141.5T1255 950m308 4q0 68-37 139.5t-109 137t-168.5 117.5t-226 83t-270.5 31t-275-33.5t-240.5-93t-171.5-151T0 985q0-115 69.5-245T267 482q169-169 341.5-236t246.5 7q65 64 20 209q-4 14-1 20t10 7t14.5-.5T912 485l6-2q139-59 246-59t153 61q45 63 0 178q-2 13-4.5 20t4.5 12.5t12 7.5t17 6q57 18 103 47t80 81.5t34 116.5m-74-624q42 47 54.5 108.5T1537 556q-8 23-29.5 34t-44.5 4q-23-8-34-29.5t-4-44.5q20-63-24-111t-107-35q-24 5-45-8t-25-37q-5-24 8-44.5t37-25.5q60-13 119 5.5t101 65.5m181-163q87 96 112.5 222.5T1769 631q-9 27-34 40t-52 4t-40-34t-5-52q28-82 10-172t-80-158q-62-69-148-95.5t-173-8.5q-28 6-52-9.5t-30-43.5t9.5-51.5T1218 21q123-26 244 11.5T1670 167"/></svg>
+        <span class="link-label">微博</span>
+      </a>
+      
+      <a class="link-card" href="https://hub.docker.com/u/wcjiang" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 24"><path fill="currentColor" d="M15.21 10.923V7.764h3.533v3.159zM18.743 0v3.267H15.21V0zm4.177 7.77v3.159h-3.533V7.77zm-8.353-3.855v3.213h-3.533V3.915zm4.177 0v3.213H15.21V3.915zm14.834 5.348l.696.482l-.482.914a4.1 4.1 0 0 1-2.434 2.081l-.029.008a7.6 7.6 0 0 1-2.419.321h.01c-1.36 3.409-3.692 6.19-6.652 8.072l-.068.041c-2.937 1.771-6.484 2.819-10.276 2.819q-.3 0-.597-.009l.029.001q-5.89 0-8.889-3.534a10.9 10.9 0 0 1-2.072-4.152l-.016-.076a11 11 0 0 1-.377-2.881q0-.828.117-1.624l-.007.06h23.294l.148.002a5.24 5.24 0 0 0 2.451-.605l-.029.014a4.45 4.45 0 0 1-.64-2.803l-.002.019a5.8 5.8 0 0 1 .871-2.809l-.014.025l.536-.75l.75.536a5.1 5.1 0 0 1 2.189 3.339l.005.031a8.8 8.8 0 0 1 2.208-.05l-.037-.003c.647.024 1.245.22 1.753.542l-.014-.009zM6.215 7.764v3.159H2.681V7.764zm4.177 0v3.159H6.86V7.764zm4.177 0v3.159h-3.535V7.764zm-4.178-3.855v3.213H6.86V3.909z"/></svg>
+        <span class="link-label">Docker Hub</span>
+      </a>
+      
+      <a class="link-card" href="https://swiftpackageindex.com/jaywcjlove" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <linearGradient id="a"
+        gradientTransform="matrix(87.2220182 325.51700346 325.51700346 -87.2220182 -171850.9 240130.23)"
+        gradientUnits="userSpaceOnUse" x1="-554.85" x2="-555.87" y1="678.04" y2="677.01">
+        <stop offset="0" stop-color="#f88a36" />
+        <stop offset="1" stop-color="#fd2020" />
+    </linearGradient>
+    <linearGradient id="b"
+        gradientTransform="matrix(168.5 291.85056108 291.85056108 -168.5 -103920.03 276367.97)"
+        x1="-554.48" x2="-555.51" xlink:href="#a" y1="677.89" y2="676.86" />
+    <linearGradient id="c"
+        gradientTransform="matrix(238.29498526 238.29498526 238.29498526 -238.29498526 -28924.83 293789.14)"
+        x1="-554.16" x2="-555.19" xlink:href="#a" y1="677.65" y2="676.62" />
+    <linearGradient id="d"
+        gradientTransform="matrix(291.85056108 168.5 168.5 -291.85056108 48023.9 291206.51)"
+        x1="-553.92" x2="-554.95" xlink:href="#a" y1="677.33" y2="676.3" />
+    <linearGradient id="e"
+        gradientTransform="matrix(325.51700346 87.2220182 87.2220182 -325.51700346 121682.23 268796.08)"
+        x1="-553.76" x2="-554.79" xlink:href="#a" y1="676.96" y2="675.93" />
+    <linearGradient id="f" gradientTransform="matrix(337 0 0 -337 187030.48 228085.09)" x1="-553.71"
+        x2="-554.74" xlink:href="#a" y1="676.56" y2="675.54" />
+    <linearGradient id="g" gradientTransform="matrix(251 0 0 -226 139214.46 152979.16)" x1="-553.62"
+        x2="-553.62" xlink:href="#a" y1="676.32" y2="675.3" />
+    <g fill="#fdfafa" fill-rule="evenodd" stroke-width="13.37">
+        <path d="m378.5 43.82 89.68 334.68-334.68 89.68-89.68-334.68z" stroke="url(#a)" />
+        <path d="m319.41 19.35 173.24 300.06-300.06 173.24-173.24-300.06z" stroke="url(#b)" />
+        <path d="m256 11 245 245-245 245-245-245z" stroke="url(#c)" />
+        <path d="m192.59 19.35 300.06 173.24-173.24 300.06-300.06-173.24z" stroke="url(#d)" />
+        <path d="m133.5 43.82 334.68 89.68-89.68 334.68-334.68-89.68z" stroke="url(#e)" />
+        <path d="m82.76 82.76h346.48v346.48h-346.48z" stroke="url(#f)" />
+    </g>
+    <path
+        d="m321.62 346.1c-30.4 17.64-72.19 19.46-114.25 1.35-34.05-14.56-62.3-40.03-80.41-69.14 8.69 7.28 18.83 13.1 29.7 18.19 43.43 20.45 86.84 19.05 117.4.05-.02-.02-.03-.03-.05-.05-43.46-33.48-80.41-77.16-107.93-112.82-5.8-5.82-10.14-13.1-14.49-19.65 33.32 30.57 86.21 69.14 105.04 80.07-39.84-42.22-75.33-94.62-73.89-93.17 63.02 64.05 121.7 100.45 121.7 100.45 1.94 1.1 3.44 2.02 4.64 2.83 1.27-3.25 2.38-6.62 3.32-10.11 10.14-37.12-1.45-79.34-26.8-114.28 58.67 35.67 93.45 102.63 78.96 158.68-.38 1.51-.79 3-1.23 4.47.17.2.34.41.51.63 28.97 36.4 21.01 74.97 17.38 67.69-15.72-30.9-44.81-21.45-59.6-15.18z"
+        fill="url(#g)" />
+</svg>
+        <span class="link-label">Swift Package Index</span>
+      </a>
+      
+      <a class="link-card" href="https://www.npmjs.com/~wcjiang" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5 21a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2zm1-3V6h12v12h-3V9h-3v9z" clip-rule="evenodd"/></svg>
+        <span class="link-label">NPM</span>
+      </a>
+      
+      <a class="link-card" href="https://www.producthunt.com/@jaywcjlove/submitted" target="_blank" rel="noopener noreferrer">
+        <svg class="link-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M326.3 218.8c0 20.5-16.7 37.2-37.2 37.2h-70.3v-74.4h70.3c20.5 0 37.2 16.7 37.2 37.2M504 256c0 137-111 248-248 248S8 393 8 256S119 8 256 8s248 111 248 248m-128.1-37.2c0-47.9-38.9-86.8-86.8-86.8H169.2v248h49.6v-74.4h70.3c47.9 0 86.8-38.9 86.8-86.8"/></svg>
+        <span class="link-label">Product Hunt</span>
+      </a>
+      
+    </div>
+  </div>
+  <footer>Made with <a href="https://github.com/jaywcjlove/Linkly" target="_blank" rel="noopener">Linkly</a></footer>
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      localStorage.setItem('linkly-theme', html.getAttribute('data-theme'));
+    }
+
+    (function() {
+      const html = document.documentElement;
+      const saved = localStorage.getItem('linkly-theme');
+      if (saved === 'light' || saved === 'dark') {
+        html.setAttribute('data-theme', saved);
+      }
+    })();
+  </script>
+</body>
+</html>
