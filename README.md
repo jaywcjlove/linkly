@@ -23,6 +23,12 @@ A Swift command-line tool that generates beautiful, responsive link aggregation 
 Requires Swift 5.9+ and macOS 13+.
 
 ```bash
+$ brew install jaywcjlove/tap/sgo
+```
+
+Or clone and build it yourself:
+
+```bash
 git clone https://github.com/jaywcjlove/Linkly.git
 cd Linkly
 swift build -c release
