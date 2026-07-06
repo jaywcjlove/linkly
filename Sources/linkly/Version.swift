@@ -1,3 +1,3 @@
 enum LinklyVersion {
-    static let current = "1.1.7"
+    static let current = "1.1.8"
 }
