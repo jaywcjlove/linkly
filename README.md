@@ -395,10 +395,16 @@ swift run linkly add GitHub https://github.com/you
 ### Release
 
 ```bash
+# ① Generate embedded resource source code
+swift Scripts/generate-embedded-resources.swift
+# ② Build universal release binary for arm64 & x86_64
 swift build -c release --arch arm64 --arch x86_64
+# ③ Archive the compiled binary
 tar -czf ./linkly.tar.gz -C ./.build/release linkly
 
+# Add custom Homebrew tap
 brew tap jaywcjlove/tap
+# Navigate to the tap repository folder
 cd "$(brew --repository jaywcjlove/tap)"
 ```
 

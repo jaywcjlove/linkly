@@ -395,7 +395,11 @@ swift run linkly add GitHub https://github.com/you
 ### 发布
 
 ```bash
+# ➊ 资源代码生成
+swift Scripts/generate-embedded-resources.swift
+# ➋ 生成二进制文件
 swift build -c release --arch arm64 --arch x86_64
+# ➌ 压缩二进制文件
 tar -czf ./linkly.tar.gz -C ./.build/release linkly
 
 brew tap jaywcjlove/tap
