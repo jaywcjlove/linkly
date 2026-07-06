@@ -19,7 +19,7 @@
       --text-muted: \#6b7280;
       --border: rgba(0, 0, 0, 0.08);
       --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-      --avatar-ring: color-mix(in srgb, var(--primary) 30%, transparent);
+      --avatar-ring: color-mix(in srgb, var(--primary) 86%, transparent);
     }
 
     html[data-theme="dark"] {
@@ -30,7 +30,7 @@
       --text-muted: \#9ca3af;
       --border: rgba(255, 255, 255, 0.08);
       --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-      --avatar-ring: color-mix(in srgb, var(--primary) 40%, transparent);
+      --avatar-ring: color-mix(in srgb, var(--primary) 86%, transparent);
     }
 
     *, *::before, *::after {

@@ -34,7 +34,7 @@ struct LinklyConfig: Codable {
             bio: "macOS/iOS 开发者 | Open Source Maintainer",
             avatar: "./avatar.jpg",
             theme: "dark",
-            primaryColor: "#00ff88"
+            primaryColor: "#00d572"
         ),
         template: Template(directory: "./templates"),
         links: [
