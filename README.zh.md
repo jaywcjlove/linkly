@@ -23,14 +23,14 @@ Linkly
 需要 Swift 5.9+ 与 macOS 13+。
 
 ```bash
-$ brew install jaywcjlove/tap/sgo
+$ brew install jaywcjlove/tap/linkly
 ```
 
 或者自己克隆编译：
 
 ```bash
-git clone https://github.com/jaywcjlove/Linkly.git
-cd Linkly
+git clone https://github.com/jaywcjlove/linkly.git
+cd linkly
 swift build -c release
 cp .build/release/linkly /usr/local/bin/
 ```
